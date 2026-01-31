@@ -1,62 +1,86 @@
 document.addEventListener("DOMContentLoaded", function() {
-    
-    // API URL eka (Free, No key needed)
-    const apiURL = "https://ipwho.is/";
-    
-    // Verification Time eka (Milliseconds walin) - 3 Seconds
-    const delayTime = 3000;
 
-    // Elements allagamu
+    // Elements
     const loadingScreen = document.getElementById('loading-screen');
     const rejectScreen = document.getElementById('reject-screen');
-
-    // API Call eka saha 3 Seconds delay eka ekata run karamu
+    
+    // Verification Time - 3 Seconds
+    const delayTime = 3000;
+    
+    // API Call Start
     Promise.all([
-        fetch(apiURL).then(response => response.json()), // API request
-        new Promise(resolve => setTimeout(resolve, delayTime)) // 3 Sec wait
+        checkIP(), 
+        new Promise(resolve => setTimeout(resolve, delayTime))
     ])
-    .then(([data]) => {
-        // Data awa, den check karamu
-        checkUser(data);
+    .then(([result]) => {
+        handleUser(result);
     })
     .catch(error => {
-        console.error("API Error:", error);
-        // Error ekak awoth reject screen eka pennamu (Security purpose)
+        console.error("Checking failed:", error);
         showRejectScreen();
     });
 
-    function checkUser(data) {
-        // 1. Country eka USA da? (US)
-        // 2. VPN ekak use karanawada? (data.security.vpn)
-        // 3. Proxy ekak use karanawada? (data.security.proxy)
-        // 4. Tor use karanawada? (data.security.tor)
+    // Main Function to check IP
+    async function checkIP() {
+        try {
+            // Mulimna 'ipapi.co' eken try karanawa (Meka godak accurate)
+            const response = await fetch('https://ipapi.co/json/');
+            const data = await response.json();
+            
+            return {
+                country: data.country_code, // US
+                // ipapi.co free eke vpn kiyala enne na, eth hosting/datacenter IPs allanawa
+                isSuspicious: (data.asn && data.org && (data.org.includes("VPN") || data.org.includes("Hosting") || data.org.includes("Cloud"))),
+                source: 'ipapi'
+            };
+        } catch (error) {
+            console.warn("ipapi.co failed, trying backup...", error);
+            
+            // ipapi.co wada nethnam 'ipwho.is' eken try karanawa (Backup)
+            try {
+                const response2 = await fetch('https://ipwho.is/');
+                const data2 = await response2.json();
+                return {
+                    country: data2.country_code,
+                    isSuspicious: (data2.security.vpn || data2.security.proxy || data2.security.tor),
+                    source: 'ipwhois'
+                };
+            } catch (err2) {
+                throw new Error("All APIs failed");
+            }
+        }
+    }
 
-        const isUSA = data.country_code === 'US';
-        const isVPN = data.security.vpn === true;
-        const isProxy = data.security.proxy === true;
-        const isTor = data.security.tor === true;
+    function handleUser(data) {
+        console.log("User Data:", data);
 
-        console.log("Country:", data.country_code);
-        console.log("VPN:", isVPN, "Proxy:", isProxy);
+        const isUSA = data.country === 'US';
+        const isSafe = !data.isSuspicious;
 
-        // Logic: USA nam SAHA VPN/Proxy nethnam witharak yanna denna
-        if (isUSA && !isVPN && !isProxy && !isTor) {
-            // Qualified! Google ekata redirect wenawa
+        // USA nam SAHA Suspicious nethnam (VPN nemei nam)
+        if (isUSA && isSafe) {
+            // Qualified! - Google ekata yanawa
             window.location.href = "https://lnksforyou.com/unlock/pUIhu4lg";
         } else {
-            // Not Qualified! Message eka pennanna
+            // Not Qualified
+            console.log("Rejected: Not US or VPN Detected");
             showRejectScreen();
         }
     }
 
     function showRejectScreen() {
-        // Loading eka hangala, reject eka pennanawa smooth vidihata
-        loadingScreen.style.opacity = '0';
+        if(loadingScreen) loadingScreen.style.opacity = '0';
         
         setTimeout(() => {
-            loadingScreen.classList.add('hidden');
-            rejectScreen.classList.remove('hidden');
-        }, 500); // Animation eka iwara wenakan poddak innawa
+            if(loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                loadingScreen.style.display = 'none';
+            }
+            if(rejectScreen) {
+                rejectScreen.classList.remove('hidden');
+                rejectScreen.style.display = 'flex'; // Pennanawa
+            }
+        }, 500); 
     }
 
 });
