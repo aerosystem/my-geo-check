@@ -1,0 +1,128 @@
+/* Google Fonts - Inter (Clean Professional Look) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: #F2F2F7; /* iOS Light Gray Background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    transition: opacity 0.5s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- iOS Style Spinner CSS --- */
+.spinner {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 20px;
+}
+
+.spinner div {
+    width: 10%;
+    height: 28%;
+    background: #8E8E93;
+    position: absolute;
+    left: 44.5%;
+    top: 37%;
+    opacity: 0;
+    border-radius: 50px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.2);
+    animation: fade 1s linear infinite;
+}
+
+@keyframes fade {
+    from {opacity: 1;}
+    to {opacity: 0.25;}
+}
+
+/* Spinner Bars Positioning */
+.bar1 {transform:rotate(0deg) translate(0, -142%); animation-delay: -1s;}
+.bar2 {transform:rotate(30deg) translate(0, -142%); animation-delay: -0.9167s;}
+.bar3 {transform:rotate(60deg) translate(0, -142%); animation-delay: -0.833s;}
+.bar4 {transform:rotate(90deg) translate(0, -142%); animation-delay: -0.75s;}
+.bar5 {transform:rotate(120deg) translate(0, -142%); animation-delay: -0.667s;}
+.bar6 {transform:rotate(150deg) translate(0, -142%); animation-delay: -0.5833s;}
+.bar7 {transform:rotate(180deg) translate(0, -142%); animation-delay: -0.5s;}
+.bar8 {transform:rotate(210deg) translate(0, -142%); animation-delay: -0.41667s;}
+.bar9 {transform:rotate(240deg) translate(0, -142%); animation-delay: -0.333s;}
+.bar10 {transform:rotate(270deg) translate(0, -142%); animation-delay: -0.25s;}
+.bar11 {transform:rotate(300deg) translate(0, -142%); animation-delay: -0.1667s;}
+.bar12 {transform:rotate(330deg) translate(0, -142%); animation-delay: -0.0833s;}
+
+.status-text {
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 15px;
+    letter-spacing: -0.2px;
+}
+
+/* --- Reject Card Styling --- */
+.card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    max-width: 350px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.icon svg {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #1C1C1E;
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+p {
+    color: #636366;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+button {
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+button:active {
+    background-color: #0062cc;
+    transform: scale(0.98);
+}
